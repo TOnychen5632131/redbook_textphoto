@@ -3,12 +3,7 @@
 <head>
     <meta name="verify-admitad" content="f923d5a120" />
     <meta charset="UTF-8">
-    <title>Text to Visual Card</title><!-- admitad.banner: e1z3ho64gcf923d5a12016525dc3e8 AliExpress WW -->
-<!-- admitad.banner: e1z3ho64gcf923d5a12016525dc3e8 AliExpress WW -->
-<a target="_blank" rel="nofollow" href="https://wextap.com/g/e1z3ho64gcf923d5a12016525dc3e8/?i=4"><img width="320" height="100" border="0" src="https://ad.admitad.com/b/e1z3ho64gcf923d5a12016525dc3e8/" alt="AliExpress WW"/></a>
-<!-- /admitad.banner -->
-    <!-- /admitad.banner -->
-    <!-- Import custom fonts -->
+    <title>Text to Visual Card</title>
     <style>
         @font-face {
             font-family: 'Smiley';
@@ -97,7 +92,6 @@
             padding: 15px;
         }
 
-        /* Center image area */
         .imageContainer {
             width: 100%;
             text-align: center;
@@ -110,7 +104,6 @@
             border-radius: 5px;
         }
 
-        /* Image title */
         .imageTitle {
             position: absolute;
             bottom: 10px;
@@ -123,7 +116,6 @@
             font-size: 10px;
         }
 
-        /* Adjust generated images section */
         #generatedImages {
             display: flex;
             justify-content: space-between;
@@ -142,7 +134,6 @@
             border-radius: 5px;
         }
 
-        /* Responsive design */
         @media screen and (max-width: 768px) {
             .innerDiv, .generatedImage {
                 width: 100%;
@@ -154,12 +145,11 @@
     <div id="app">
         <h1>📖 Text to Visual Card</h1>
         <p style="text-align: center; color: #777; font-size: 14px;">Use this tool to create visually engaging content for platforms like Instagram, Facebook, and more.</p>
-        <!-- API Key Input -->
-        <label>🔑 OpenAI API Key:</label>
-        <input type="text" id="apiKey" placeholder="Please enter your OpenAI API Key">
+
         <!-- Text input area -->
         <label>📝 Enter Text:</label>
         <textarea id="userText" placeholder="Enter or paste your text here" rows="5"></textarea>
+
         <!-- Theme selection -->
         <label>🎨 Choose Theme:</label>
         <select id="themeSelect">
@@ -167,6 +157,7 @@
             <option value="tutorial">Tutorial</option>
             <option value="keypoints">Key Points</option>
         </select>
+
         <!-- Image upload -->
         <label>🖼️ Upload Image (Optional):</label>
         <input type="file" id="imageUpload" accept="image/*">
@@ -175,18 +166,14 @@
         <button id="exportAllButton" onclick="exportAllImages()">Export All Images</button>
         <button id="exportPreviewButton" onclick="exportPreviewImages()">Export Preview Screenshot</button>
         <div id="loadingIndicator" style="display: none;">Loading...</div>
+
         <h2>👁️ Page Preview</h2>
         <div id="resultDiv">
-            <div class="innerDiv" id="leftDiv">
-                <!-- Left content -->
-            </div>
-            <div class="innerDiv" id="midDiv">
-                <!-- Middle content -->
-            </div>
-            <div class="innerDiv" id="rightDiv">
-                <!-- Right content -->
-            </div>
+            <div class="innerDiv" id="leftDiv"></div>
+            <div class="innerDiv" id="midDiv"></div>
+            <div class="innerDiv" id="rightDiv"></div>
         </div>
+
         <h2>⬇️ Generated Images</h2>
         <div id="generatedImages">
             <img class="generatedImage" id="leftImage" src="https://via.placeholder.com/1242x1660?text=Placeholder+Image" alt="Left Image">
@@ -194,16 +181,19 @@
             <img class="generatedImage" id="rightImage" src="https://via.placeholder.com/1242x1660?text=Placeholder+Image" alt="Right Image">
         </div>
     </div>
-    
+
     <!-- Import necessary scripts -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    
+
     <script>
         let uploadedImageDataUrl = ''; // Store the uploaded image's Data URL
         let generatedImages = []; // Store generated image data
+
+        // 写死的 API Key
+        const apiKey = 'sk-JrEeXokuYxxLlGqnDro3nzUYQvax4M9Wn7u7WnpHW1XmWmms'; // 将 YOUR_OPENAI_API_KEY 替换为你的实际 API 密钥
 
         // Handle image upload
         document.getElementById('imageUpload').addEventListener('change', function (event) {
@@ -218,12 +208,6 @@
         });
 
         async function processText() {
-            const apiKey = document.getElementById('apiKey').value.trim();
-            if (!apiKey) {
-                alert("Please enter your OpenAI API Key.");
-                return;
-            }
-
             const text = document.getElementById('userText').value;
             const theme = document.getElementById('themeSelect').value;
 
@@ -231,15 +215,6 @@
                 alert("Please enter some text!");
                 return;
             }
-
-            // Estimate reading time based on word count
-            const wordsPerMinute = 300;
-            const readTimeMinutes = text.length / wordsPerMinute;
-            const readTime = readTimeMinutes.toFixed(1) + ' minutes';
-
-            // Estimate time saved assuming card can be read in 30 seconds
-            const timeSavedMinutes = Math.max(readTimeMinutes - 0.5, 0);
-            const timeSaved = timeSavedMinutes.toFixed(1) + ' minutes';
 
             // Show loading indicator
             document.getElementById('loadingIndicator').style.display = 'block';
@@ -284,7 +259,6 @@
                         ${text}
                     `;
                 } else {
-                    // Default theme
                     prompt = `
                         Please analyze the following text and provide:
                         1. A suitable title.
@@ -316,7 +290,7 @@
                 }, {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
+                        'Authorization': `Bearer ${apiKey}` // 这里使用硬编码的 API 密钥
                     }
                 });
 
@@ -335,33 +309,13 @@
                     }
                 }
 
-                // Add additional information
-                article.words_count = text.length;
-                article.read_time = readTime;
-                article.time_saved = timeSaved;
-                article.theme = theme;
-
-                // Use uploaded image if available
-                if (uploadedImageDataUrl) {
-                    article.image_url = uploadedImageDataUrl;
-                } else {
-                    // Use a placeholder image instead of generating AI image
-                    article.image_url = "https://via.placeholder.com/512x512?text=No+Image+Available";
-                }
-
-                // Display article content
+                // Display article info
                 displayArticleInfo(article);
-
-                // Enable image generation and export buttons
-                document.getElementById('generateButton').disabled = false;
-                document.getElementById('exportAllButton').disabled = false;
-                document.getElementById('exportPreviewButton').disabled = false;
 
             } catch (error) {
                 console.error('Error:', error);
                 alert('Text processing failed, check console for more details.');
             } finally {
-                // Hide loading indicator
                 document.getElementById('loadingIndicator').style.display = 'none';
             }
         }
@@ -466,7 +420,6 @@
         }
 
         async function generatePicture() {
-            // Wait for fonts and images to load
             await document.fonts.ready;
             const images = document.images;
             await Promise.all(Array.from(images).map(img => {
@@ -476,14 +429,13 @@
                 });
             }));
 
-            // Clear previous image data and displayed images
             generatedImages = [];
             document.getElementById('leftImage').src = '';
             document.getElementById('midImage').src = '';
             document.getElementById('rightImage').src = '';
 
             const options = {
-                scale: 2, // Increase resolution
+                scale: 2, 
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: null,
@@ -492,7 +444,6 @@
                 }
             };
 
-            // Generate left image
             try {
                 const leftCanvas = await html2canvas(document.getElementById('leftDiv'), options);
                 const dataUrl = leftCanvas.toDataURL('image/png');
@@ -502,7 +453,6 @@
                 console.error('Failed to generate left image:', error);
             }
 
-            // Generate middle image
             try {
                 const midCanvas = await html2canvas(document.getElementById('midDiv'), options);
                 const dataUrl = midCanvas.toDataURL('image/png');
@@ -512,7 +462,6 @@
                 console.error('Failed to generate middle image:', error);
             }
 
-            // Generate right image
             try {
                 const rightCanvas = await html2canvas(document.getElementById('rightDiv'), options);
                 const dataUrl = rightCanvas.toDataURL('image/png');
@@ -563,7 +512,6 @@
                 }
             };
 
-            // Capture left preview
             try {
                 const leftCanvas = await html2canvas(document.getElementById('leftDiv'), options);
                 const leftDataUrl = leftCanvas.toDataURL('image/png');
@@ -572,7 +520,6 @@
                 console.error('Failed to generate left preview image:', error);
             }
 
-            // Capture middle preview
             try {
                 const midCanvas = await html2canvas(document.getElementById('midDiv'), options);
                 const midDataUrl = midCanvas.toDataURL('image/png');
@@ -581,7 +528,6 @@
                 console.error('Failed to generate middle preview image:', error);
             }
 
-            // Capture right preview
             try {
                 const rightCanvas = await html2canvas(document.getElementById('rightDiv'), options);
                 const rightDataUrl = rightCanvas.toDataURL('image/png');
@@ -590,7 +536,6 @@
                 console.error('Failed to generate right preview image:', error);
             }
 
-            // Pack and download
             const zip = new JSZip();
             const imgFolder = zip.folder("preview_images");
 
@@ -606,7 +551,6 @@
 
         function applyTheme(theme) {
             if (theme === 'default') {
-                // Default theme styles
                 document.documentElement.style.setProperty('--main-bg-color', '#282729');
                 document.documentElement.style.setProperty('--main-text-color', 'white');
                 document.documentElement.style.setProperty('--accent-color', '#29FE82');
