@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>文本转图文</title>
-    <!-- 引入自定义字体 -->
+    <title>Text to Visual Card</title>
+    <!-- Import custom fonts -->
     <style>
         @font-face {
             font-family: 'Smiley';
@@ -92,7 +92,7 @@
             padding: 15px;
         }
 
-        /* 使图片区域居中 */
+        /* Center image area */
         .imageContainer {
             width: 100%;
             text-align: center;
@@ -105,7 +105,7 @@
             border-radius: 5px;
         }
 
-        /* 图片标题 */
+        /* Image title */
         .imageTitle {
             position: absolute;
             bottom: 10px;
@@ -118,23 +118,26 @@
             font-size: 10px;
         }
 
-        /* 调整生成的图片区域样式 */
+        /* Adjust generated images section */
         #generatedImages {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             margin-top: 30px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
         }
 
         .generatedImage {
-            width: 30%;
-            min-width: 280px;
+            width: 300px;
+            height: 400px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
 
-        /* 响应式设计 */
+        /* Responsive design */
         @media screen and (max-width: 768px) {
             .innerDiv, .generatedImage {
                 width: 100%;
@@ -144,64 +147,60 @@
 </head>
 <body>
     <div id="app">
-        <h1>📖 文本转图文卡片</h1>
-        <!-- API Key 输入 -->
-        <label>🔑 OpenAI API Key：</label>
-        <input type="text" id="apiKey" placeholder="请输入您的 OpenAI API Key">
-        <!-- 文本输入框 -->
-        <label>📝 输入文本：</label>
-        <textarea id="userText" placeholder="在此输入或粘贴您的文本" rows="5"></textarea>
-        <!-- 主题选择 -->
-        <label>🎨 选择主题：</label>
+        <h1>📖 Text to Visual Card</h1>
+        <p style="text-align: center; color: #777; font-size: 14px;">Use this tool to create visually engaging content for platforms like Instagram, Facebook, and more.</p>
+        <!-- API Key Input -->
+        <label>🔑 OpenAI API Key:</label>
+        <input type="text" id="apiKey" placeholder="Please enter your OpenAI API Key">
+        <!-- Text input area -->
+        <label>📝 Enter Text:</label>
+        <textarea id="userText" placeholder="Enter or paste your text here" rows="5"></textarea>
+        <!-- Theme selection -->
+        <label>🎨 Choose Theme:</label>
         <select id="themeSelect">
-            <option value="default">默认主题</option>
-            <option value="tutorial">教程</option>
-            <option value="keypoints">要点</option>
-            <!-- 您可以在此添加更多主题 -->
+            <option value="default">Default Theme</option>
+            <option value="tutorial">Tutorial</option>
+            <option value="keypoints">Key Points</option>
         </select>
-        <!-- 图片上传 -->
-        <label>🖼️ 上传图片（可选）：</label>
+        <!-- Image upload -->
+        <label>🖼️ Upload Image (Optional):</label>
         <input type="file" id="imageUpload" accept="image/*">
-        <button id="processButton" onclick="processText()">生成图文信息</button>
-        <button id="generateButton" onclick="generatePicture()" disabled>生成图片</button>
-        <button id="exportAllButton" onclick="exportAllImages()" disabled>导出所有图片</button>
-        <!-- 新增的按钮 -->
-        <button id="exportPreviewButton" onclick="exportPreviewImages()" disabled>导出预览截图</button>
-        <div id="loadingIndicator" style="display: none;">加载中...</div>
-        <h2>👁️ 页面预览</h2>
+        <button id="processButton" onclick="processText()">Generate Visual Content</button>
+        <button id="generateButton" onclick="generatePicture()">Generate Image</button>
+        <button id="exportAllButton" onclick="exportAllImages()">Export All Images</button>
+        <button id="exportPreviewButton" onclick="exportPreviewImages()">Export Preview Screenshot</button>
+        <div id="loadingIndicator" style="display: none;">Loading...</div>
+        <h2>👁️ Page Preview</h2>
         <div id="resultDiv">
             <div class="innerDiv" id="leftDiv">
-                <!-- 左侧内容 -->
+                <!-- Left content -->
             </div>
             <div class="innerDiv" id="midDiv">
-                <!-- 中间内容 -->
+                <!-- Middle content -->
             </div>
             <div class="innerDiv" id="rightDiv">
-                <!-- 右侧内容 -->
+                <!-- Right content -->
             </div>
         </div>
-        <h2>⬇️ 生成的图片</h2>
+        <h2>⬇️ Generated Images</h2>
         <div id="generatedImages">
-            <img class="generatedImage" id="leftImage" src="" alt="左侧图片">
-            <img class="generatedImage" id="midImage" src="" alt="中间图片">
-            <img class="generatedImage" id="rightImage" src="" alt="右侧图片">
+            <img class="generatedImage" id="leftImage" src="https://via.placeholder.com/1242x1660?text=Placeholder+Image" alt="Left Image">
+            <img class="generatedImage" id="midImage" src="https://via.placeholder.com/1242x1660?text=Placeholder+Image" alt="Middle Image">
+            <img class="generatedImage" id="rightImage" src="https://via.placeholder.com/1242x1660?text=Placeholder+Image" alt="Right Image">
         </div>
     </div>
     
-    <!-- 引入必要的脚本 -->
+    <!-- Import necessary scripts -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- 引入 html2canvas 库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- 引入 JSZip 库用于打包下载 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
-    <!-- 引入 FileSaver.js 用于保存文件 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     
     <script>
-        let uploadedImageDataUrl = ''; // 存储上传的图片的 Data URL
-        let generatedImages = []; // 存储生成的图片数据
+        let uploadedImageDataUrl = ''; // Store the uploaded image's Data URL
+        let generatedImages = []; // Store generated image data
 
-        // 处理图片上传
+        // Handle image upload
         document.getElementById('imageUpload').addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (file) {
@@ -216,7 +215,7 @@
         async function processText() {
             const apiKey = document.getElementById('apiKey').value.trim();
             if (!apiKey) {
-                alert("请输入您的 OpenAI API Key。");
+                alert("Please enter your OpenAI API Key.");
                 return;
             }
 
@@ -224,89 +223,88 @@
             const theme = document.getElementById('themeSelect').value;
 
             if (text.trim() === "") {
-                alert("请输入文本！");
+                alert("Please enter some text!");
                 return;
             }
 
-            // 根据字数估算阅读时间
+            // Estimate reading time based on word count
             const wordsPerMinute = 300;
             const readTimeMinutes = text.length / wordsPerMinute;
-            const readTime = readTimeMinutes.toFixed(1) + '分钟';
+            const readTime = readTimeMinutes.toFixed(1) + ' minutes';
 
-            // 估算“省时”，假设生成的卡片可以在 30 秒内阅读完
+            // Estimate time saved assuming card can be read in 30 seconds
             const timeSavedMinutes = Math.max(readTimeMinutes - 0.5, 0);
-            const timeSaved = timeSavedMinutes.toFixed(1) + '分钟';
+            const timeSaved = timeSavedMinutes.toFixed(1) + ' minutes';
 
-            // 显示加载中指示器
+            // Show loading indicator
             document.getElementById('loadingIndicator').style.display = 'block';
 
             try {
-                // 修改提示，要求生成 image_description
+                // Create prompt based on theme
                 let prompt = '';
                 if (theme === 'tutorial') {
                     prompt = `
-                        请将以下文本内容提炼为教程形式，提供：
-                        1. 为教程生成一个简洁的标题。
-                        2. 一句话概括教程目的。
-                        3. 按步骤详细说明（尽可能分解为步骤），以数组形式返回，每个步骤包含 step_number 和 description。
-                        4. 三个可能遇到的问题和解决方案，以数组形式返回，每个问题包含 question 和 solution。
-                        5. 提供一个清晰的 image_description，用于生成与内容相关的图片。
+                        Please distill the following text into a tutorial format and provide:
+                        1. A concise title for the tutorial.
+                        2. A one-sentence summary of the tutorial's purpose.
+                        3. A detailed breakdown of the steps (as many as possible) in an array format, each step including step_number and description.
+                        4. Three potential questions and their solutions, provided in an array.
+                        5. An image description for a related visual.
 
-                        请以 JSON 格式返回，字段包括：
-                        - title：教程标题
-                        - one_word：一句话概括
-                        - steps：步骤数组
-                        - faqs：问题和解决方案数组
-                        - image_description：用于生成图片的描述
+                        Return in JSON format including:
+                        - title
+                        - one_word (one-sentence summary)
+                        - steps
+                        - faqs
+                        - image_description
 
-                        文本内容如下：
+                        Text content:
                         ${text}
                     `;
                 } else if (theme === 'keypoints') {
                     prompt = `
-                        请对以下文本进行分析，并提供：
-                        1. 为内容生成一个合适的标题。
-                        2. 一句话概括。
-                        3. 五个关键信息点，以数组形式返回。
-                        4. 对每个关键信息点进行简要解释。
-                        5. 提供一个清晰的 image_description，用于生成与内容相关的图片。
+                        Please analyze the following text and provide:
+                        1. A suitable title for the content.
+                        2. A one-sentence summary.
+                        3. Five key points with brief explanations in array format.
+                        4. An image description for a related visual.
 
-                        请以 JSON 格式返回，字段包括：
-                        - title：内容标题
-                        - one_word：一句话概括
-                        - key_points：关键信息点数组，每个包含 point 和 explanation
-                        - image_description：用于生成图片的描述
+                        Return in JSON format including:
+                        - title
+                        - one_word
+                        - key_points
+                        - image_description
 
-                        文本内容如下：
+                        Text content:
                         ${text}
                     `;
                 } else {
-                    // 默认主题
+                    // Default theme
                     prompt = `
-                        请对以下文本进行分析，并提供：
-                        1. 为内容生成一个合适的标题。
-                        2. 一句话概括。
-                        3. 三个关键信息点，以数组形式返回。
-                        4. 三个需要关注的问题和答案，以数组形式返回，每个问题包含 question 和 answer。
-                        5. 提供一个清晰的 image_description，用于生成与内容相关的图片。
+                        Please analyze the following text and provide:
+                        1. A suitable title.
+                        2. A one-sentence summary.
+                        3. Three key points in array format.
+                        4. Three questions and answers, in array format.
+                        5. An image description for a related visual.
 
-                        请以 JSON 格式返回，字段包括：
-                        - title：内容标题
-                        - one_word：一句话概括
-                        - key_points：关键信息点数组
-                        - questions：问题和答案数组
-                        - image_description：用于生成图片的描述
+                        Return in JSON format including:
+                        - title
+                        - one_word
+                        - key_points
+                        - questions
+                        - image_description
 
-                        文本内容如下：
+                        Text content:
                         ${text}
                     `;
                 }
 
-                // 调用 OpenAI API 生成内容
+                // Call OpenAI API to generate content
                 const responseContent = await axios.post('https://aihubmix.com/v1/chat/completions', {
                     model: 'gpt-3.5-turbo',
                     messages: [
-                        { role: 'system', content: '你是一个专业的文本分析助手。' },
+                        { role: 'system', content: 'You are a professional text analysis assistant.' },
                         { role: 'user', content: prompt }
                     ],
                     temperature: 0.7
@@ -319,7 +317,7 @@
 
                 const resultText = responseContent.data.choices[0].message.content;
 
-                // 解析返回的结果
+                // Parse the result
                 let article;
                 try {
                     article = JSON.parse(resultText);
@@ -328,54 +326,37 @@
                     if (jsonMatch) {
                         article = JSON.parse(jsonMatch[0]);
                     } else {
-                        throw new Error('无法解析 API 返回的数据。');
+                        throw new Error('Unable to parse API response data.');
                     }
                 }
 
-                // 添加额外信息
+                // Add additional information
                 article.words_count = text.length;
                 article.read_time = readTime;
                 article.time_saved = timeSaved;
                 article.theme = theme;
 
-                // 使用上传的图片
+                // Use uploaded image if available
                 if (uploadedImageDataUrl) {
                     article.image_url = uploadedImageDataUrl;
                 } else {
-                    // 使用 AI 生成的 image_description
-                    const imagePrompt = article.image_description;
-
-                    // 调用图片生成 API
-                    const responseImage = await axios.post('https://aihubmix.com/v1/images/generations', {
-                        prompt: imagePrompt,
-                        n: 1,
-                        size: "512x512"
-                    }, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${apiKey}`
-                        }
-                    });
-
-                    const imageUrl = responseImage.data.data[0].url;
-
-                    // 将图片 URL 存储在 article 对象中
-                    article.image_url = imageUrl;
+                    // Use a placeholder image instead of generating AI image
+                    article.image_url = "https://via.placeholder.com/512x512?text=No+Image+Available";
                 }
 
-                // 显示内容
+                // Display article content
                 displayArticleInfo(article);
-                // 启用生成图片和导出按钮
+
+                // Enable image generation and export buttons
                 document.getElementById('generateButton').disabled = false;
                 document.getElementById('exportAllButton').disabled = false;
-                // 启用新添加的按钮
                 document.getElementById('exportPreviewButton').disabled = false;
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('文本处理失败，请检查控制台以获取详细信息。');
+                alert('Text processing failed, check console for more details.');
             } finally {
-                // 隐藏加载中指示器
+                // Hide loading indicator
                 document.getElementById('loadingIndicator').style.display = 'none';
             }
         }
@@ -385,15 +366,15 @@
             const midDiv = document.getElementById('midDiv');
             const rightDiv = document.getElementById('rightDiv');
 
-            // 应用主题样式
+            // Apply theme style
             applyTheme(article.theme);
 
-            // 左侧内容
+            // Left content
             leftDiv.innerHTML = `
                 <div class="innerDivContent">
                     <div style="font-size: 50px; color: var(--accent-color); margin-top: 40px;">30s</div>
-                    <div style="font-size: 24px; color: black; background-color: var(--accent-color); margin-top: 10px; padding: 5px 10px; border-radius: 4px;">✔学会一个新知识</div>
-                    <div style="margin-top: 20px; color: var(--main-text-color);">原文：${article.words_count}字 | 省时：${article.time_saved}</div>
+                    <div style="font-size: 24px; color: black; background-color: var(--accent-color); margin-top: 10px; padding: 5px 10px; border-radius: 4px;">✔ Learn a new skill</div>
+                    <div style="margin-top: 20px; color: var(--main-text-color);">Original: ${article.words_count} words | Time saved: ${article.time_saved}</div>
                     <div class="imageContainer">
                         <img src="${article.image_url}" alt="Generated Image">
                         <div class="imageTitle">${article.title}</div>
@@ -402,46 +383,46 @@
             `;
 
             if (article.theme === 'tutorial') {
-                // 中间内容（教程主题）
+                // Middle content (Tutorial theme)
                 midDiv.innerHTML = `
                     <div class="innerDivContent">
-                        <div style="font-size: 20px; color: var(--accent-color);">📝 教程概览</div>
+                        <div style="font-size: 20px; color: var(--accent-color);">📝 Tutorial Overview</div>
                         <hr>
-                        <div style="font-size: 16px; color: var(--accent-color); margin-top: 10px;">🎯 教程目的</div>
+                        <div style="font-size: 16px; color: var(--accent-color); margin-top: 10px;">🎯 Purpose</div>
                         <div style="font-size: 14px; color: var(--main-text-color); margin-top: 5px;">${article.one_word}</div>
-                        <div style="font-size: 16px; color: var(--accent-color); margin-top: 10px;">📌 步骤</div>
+                        <div style="font-size: 16px; color: var(--accent-color); margin-top: 10px;">📌 Steps</div>
                         <div style="font-size: 12px; color: var(--main-text-color); margin-top: 5px;">
-                            ${article.steps.map(step => `<p>🔹 步骤 ${step.step_number}: ${step.description}</p>`).join('')}
+                            ${article.steps.map(step => `<p>🔹 Step ${step.step_number}: ${step.description}</p>`).join('')}
                         </div>
                     </div>
                 `;
 
-                // 右侧内容（教程主题）
+                // Right content (Tutorial theme)
                 rightDiv.innerHTML = `
                     <div class="innerDivContent">
-                        <div style="font-size: 20px; color: var(--accent-color);">❓ 常见问题解答</div>
+                        <div style="font-size: 20px; color: var(--accent-color);">❓ FAQs</div>
                         <hr>
                         ${article.faqs.map(faq => `
-                            <div style="font-size: 14px; color: var(--accent-color); margin-top: 10px;">🔸 问题：${faq.question}</div>
-                            <div style="font-size: 12px; color: var(--main-text-color); margin-top: 5px;">💡 解决方案：${faq.solution}</div>
+                            <div style="font-size: 14px; color: var(--accent-color); margin-top: 10px;">🔸 Question: ${faq.question}</div>
+                            <div style="font-size: 12px; color: var(--main-text-color); margin-top: 5px;">💡 Solution: ${faq.solution}</div>
                         `).join('')}
                     </div>
                 `;
             } else if (article.theme === 'keypoints') {
-                // 中间内容（要点主题）
+                // Middle content (Key Points theme)
                 midDiv.innerHTML = `
                     <div class="innerDivContent">
-                        <div style="font-size: 20px; color: var(--accent-color);">🌟 主要内容概览</div>
+                        <div style="font-size: 20px; color: var(--accent-color);">🌟 Main Overview</div>
                         <hr>
-                        <div style="font-size: 16px; color: var(--accent-color); margin-top: 10px;">📝 一句话概括</div>
+                        <div style="font-size: 16px; color: var(--accent-color); margin-top: 10px;">📝 One Sentence Summary</div>
                         <div style="font-size: 14px; color: var(--main-text-color); margin-top: 5px;">${article.one_word}</div>
                     </div>
                 `;
 
-                // 右侧内容（要点主题）
+                // Right content (Key Points theme)
                 rightDiv.innerHTML = `
                     <div class="innerDivContent">
-                        <div style="font-size: 20px; color: var(--accent-color);">🔑 关键信息点</div>
+                        <div style="font-size: 20px; color: var(--accent-color);">🔑 Key Points</div>
                         <hr>
                         ${article.key_points.map(point => `
                             <div style="font-size: 14px; color: var(--accent-color); margin-top: 10px;">• ${point.point}</div>
@@ -450,25 +431,25 @@
                     </div>
                 `;
             } else {
-                // 默认主题内容
-                // 中间内容
+                // Default theme content
+                // Middle content
                 midDiv.innerHTML = `
                     <div class="innerDivContent">
-                        <div style="font-size: 25px; color: var(--accent-color); padding-top: 20px;">🚀10s 速览全文</div>
+                        <div style="font-size: 25px; color: var(--accent-color); padding-top: 20px;">🚀10s Overview</div>
                         <hr style="border: 0; height: 1px; background-color: grey;">
-                        <div style="font-size: 18px; color: var(--accent-color); margin-top: 20px;">🤔 一句话概括</div>
+                        <div style="font-size: 18px; color: var(--accent-color); margin-top: 20px;">🤔 Summary</div>
                         <div style="font-size: 15px; color: var(--main-text-color); margin-top: 5px;">${article.one_word}</div>
-                        <div style="font-size: 18px; color: var(--accent-color); margin-top: 20px;">🎯 关键信息</div>
+                        <div style="font-size: 18px; color: var(--accent-color); margin-top: 20px;">🎯 Key Points</div>
                         <div style="font-size: 12px; color: var(--main-text-color); margin-top: 5px;">
                             ${article.key_points.map(point => `<p>👉 ${point}</p>`).join('')}
                         </div>
                     </div>
                 `;
 
-                // 右侧内容
+                // Right content
                 rightDiv.innerHTML = `
                     <div class="innerDivContent">
-                        <div style="font-size: 20px; color: var(--accent-color); padding-top: 20px;">🙋 必须关注的 3 个问题</div>
+                        <div style="font-size: 20px; color: var(--accent-color); padding-top: 20px;">🙋 Top 3 Questions</div>
                         <hr style="border: 0; height: 1px; background-color: grey;">
                         ${article.questions.map(q => `
                             <div style="font-size: 15px; color: var(--accent-color); margin-top: 20px;">💭 ${q.question}</div>
@@ -480,7 +461,7 @@
         }
 
         async function generatePicture() {
-            // 等待字体和图片资源加载完成
+            // Wait for fonts and images to load
             await document.fonts.ready;
             const images = document.images;
             await Promise.all(Array.from(images).map(img => {
@@ -490,57 +471,56 @@
                 });
             }));
 
-            // 清空之前的图片数据和显示的图片
+            // Clear previous image data and displayed images
             generatedImages = [];
             document.getElementById('leftImage').src = '';
             document.getElementById('midImage').src = '';
             document.getElementById('rightImage').src = '';
 
             const options = {
-                scale: 2, // 提高清晰度
+                scale: 2, // Increase resolution
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: null,
-                // 修改 onclone 回调函数
                 onclone: async (clonedDoc) => {
                     await clonedDoc.fonts.ready;
                 }
             };
 
-            // 生成左侧图片
+            // Generate left image
             try {
                 const leftCanvas = await html2canvas(document.getElementById('leftDiv'), options);
                 const dataUrl = leftCanvas.toDataURL('image/png');
                 document.getElementById('leftImage').src = dataUrl;
                 generatedImages.push({ name: 'leftDiv.png', dataUrl: dataUrl });
             } catch (error) {
-                console.error('生成左侧图片失败：', error);
+                console.error('Failed to generate left image:', error);
             }
 
-            // 生成中间图片
+            // Generate middle image
             try {
                 const midCanvas = await html2canvas(document.getElementById('midDiv'), options);
                 const dataUrl = midCanvas.toDataURL('image/png');
                 document.getElementById('midImage').src = dataUrl;
                 generatedImages.push({ name: 'midDiv.png', dataUrl: dataUrl });
             } catch (error) {
-                console.error('生成中间图片失败：', error);
+                console.error('Failed to generate middle image:', error);
             }
 
-            // 生成右侧图片
+            // Generate right image
             try {
                 const rightCanvas = await html2canvas(document.getElementById('rightDiv'), options);
                 const dataUrl = rightCanvas.toDataURL('image/png');
                 document.getElementById('rightImage').src = dataUrl;
                 generatedImages.push({ name: 'rightDiv.png', dataUrl: dataUrl });
             } catch (error) {
-                console.error('生成右侧图片失败：', error);
+                console.error('Failed to generate right image:', error);
             }
         }
 
         function exportAllImages() {
             if (generatedImages.length === 0) {
-                alert('请先点击“生成图片”按钮。');
+                alert('Please click "Generate Image" first.');
                 return;
             }
 
@@ -548,7 +528,6 @@
             const imgFolder = zip.folder("images");
 
             generatedImages.forEach(item => {
-                // 将 dataUrl 转换为二进制数据
                 const imgData = item.dataUrl.split(',')[1];
                 imgFolder.file(item.name, imgData, { base64: true });
             });
@@ -558,9 +537,7 @@
             });
         }
 
-        // 修改 exportPreviewImages 函数
         async function exportPreviewImages() {
-            // 等待字体和图片资源加载完成
             await document.fonts.ready;
             const images = document.images;
             await Promise.all(Array.from(images).map(img => {
@@ -576,40 +553,39 @@
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: null,
-                // 修改 onclone 回调函数
                 onclone: async (clonedDoc) => {
                     await clonedDoc.fonts.ready;
                 }
             };
 
-            // 截图左侧预览
+            // Capture left preview
             try {
                 const leftCanvas = await html2canvas(document.getElementById('leftDiv'), options);
                 const leftDataUrl = leftCanvas.toDataURL('image/png');
                 previewImages.push({ name: 'preview_left.png', dataUrl: leftDataUrl });
             } catch (error) {
-                console.error('生成左侧预览图片失败：', error);
+                console.error('Failed to generate left preview image:', error);
             }
 
-            // 截图中间预览
+            // Capture middle preview
             try {
                 const midCanvas = await html2canvas(document.getElementById('midDiv'), options);
                 const midDataUrl = midCanvas.toDataURL('image/png');
                 previewImages.push({ name: 'preview_mid.png', dataUrl: midDataUrl });
             } catch (error) {
-                console.error('生成中间预览图片失败：', error);
+                console.error('Failed to generate middle preview image:', error);
             }
 
-            // 截图右侧预览
+            // Capture right preview
             try {
                 const rightCanvas = await html2canvas(document.getElementById('rightDiv'), options);
                 const rightDataUrl = rightCanvas.toDataURL('image/png');
                 previewImages.push({ name: 'preview_right.png', dataUrl: rightDataUrl });
             } catch (error) {
-                console.error('生成右侧预览图片失败：', error);
+                console.error('Failed to generate right preview image:', error);
             }
 
-            // 打包下载
+            // Pack and download
             const zip = new JSZip();
             const imgFolder = zip.folder("preview_images");
 
@@ -625,7 +601,7 @@
 
         function applyTheme(theme) {
             if (theme === 'default') {
-                // 默认主题样式
+                // Default theme styles
                 document.documentElement.style.setProperty('--main-bg-color', '#282729');
                 document.documentElement.style.setProperty('--main-text-color', 'white');
                 document.documentElement.style.setProperty('--accent-color', '#29FE82');
@@ -638,7 +614,6 @@
                 document.documentElement.style.setProperty('--main-text-color', '#000000');
                 document.documentElement.style.setProperty('--accent-color', '#ff4500');
             }
-            // 应用样式到 innerDivs
             const innerDivs = document.querySelectorAll('.innerDiv');
             innerDivs.forEach(div => {
                 div.style.backgroundColor = 'var(--main-bg-color)';
