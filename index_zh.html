@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,53 +6,6 @@
     <meta charset="UTF-8">
     <title>Text to Visual Card</title>
     <style>
-                /* iOS 风格的开关按钮 */
-        .switch {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 34px;
-        margin-left: 20px; /* 调整与其他元素的间距 */
-        }
-
-        .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-        }
-
-        .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: .4s;
-        border-radius: 34px;
-        }
-
-        .slider:before {
-        position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        transition: .4s;
-        border-radius: 50%;
-        }
-
-        input:checked + .slider {
-        background-color: #2196F3;
-        }
-
-        input:checked + .slider:before {
-        transform: translateX(26px);
-        }
-
         @font-face {
             font-family: 'Smiley';
             src: url('Smiley.ttf') format('truetype');
@@ -186,8 +140,55 @@
                 width: 100%;
             }
         }
-                /* 设置容器为 flex 布局，内容水平和垂直居中 */
-                .center-container {
+
+        /* iOS 风格的开关按钮 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-left: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+                        /* 设置容器为 flex 布局，内容水平和垂直居中 */
+                        .center-container {
             display: flex;
             justify-content: center;  /* 水平居中 */
 
@@ -197,23 +198,24 @@
 </head>
 <body>
     <div id="app">
-        <!-- admitad.banner: e1z3ho64gcf923d5a12016525dc3e8 AliExpress WW -->
-        <div class="center-container">
-            <a target="_blank" rel="nofollow" href="https://wextap.com/g/e1z3ho64gcf923d5a12016525dc3e8/?i=4">
-                <img width="320" height="100" border="0" src="banner-320-100.493d.jpg" alt="AliExpress WW"/>
-            </a>
-        </div>
-<!-- /admitad.banner -->
-        <h1>📖 Text to Visual Card</h1>
+                        <!-- admitad.banner: e1z3ho64gcf923d5a12016525dc3e8 AliExpress WW -->
+                        <div class="center-container">
+                            <a target="_blank" rel="nofollow" href="https://wextap.com/g/e1z3ho64gcf923d5a12016525dc3e8/?i=4">
+                                <img width="320" height="100" border="0" src="banner-320-100.493d.jpg" alt="AliExpress WW"/>
+                            </a>
+                        </div>
+        <h1>📖 小红书图文 AI 生成</h1>
+
+        <p style="text-align: center; color: #777; font-size: 14px;">Use this tool to create visually engaging content for platforms like Instagram, Facebook, and more.</p>
+
+        <!-- iOS 风格的语言切换开关 -->
         <div style="float: right;">
             <label class="switch">
-              <input type="checkbox" id="languageSwitch" onchange="toggleLanguage()">
-              <span class="slider"></span>
+                <input type="checkbox" id="languageSwitch" onchange="toggleLanguage()">
+                <span class="slider"></span>
             </label>
             <span>English/中文</span>
-          </div>
-          
-        <p style="text-align: center; color: #777; font-size: 14px;">Use this tool to create visually engaging content for platforms like Instagram, Facebook, and more.</p>
+        </div>
 
         <!-- Text input area -->
         <label>📝 Enter Text:</label>
@@ -260,30 +262,14 @@
 
     <script>
         function toggleLanguage() {
-    const languageSwitch = document.getElementById("languageSwitch");
-    if (languageSwitch.checked) {
-        // 切换为中文，跳转到中文版本页面
-        window.location.href = "index_zh.html"; // 替换为实际的中文页面 URL
-    } else {
-        // 切换为英文，跳转到英文版本页面
-        window.location.href = "index.html"; // 替换为实际的英文页面 URL
-    }
-}
-
-        let uploadedImageDataUrl = ''; 
-        let generatedImages = []; 
-
-        document.getElementById('imageUpload').addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    uploadedImageDataUrl = e.target.result;
-                };
-                reader.readAsDataURL(file);
+            const languageSwitch = document.getElementById("languageSwitch");
+            if (languageSwitch.checked) {
+                // 切换到中文页面
+                window.location.href = "index.html";
             }
-        });
+        }
 
+        // 其他功能的代码...
         async function processText() {
             const apiKey = 'sk-JrEeXokuYxxLlGqnDro3nzUYQvax4M9Wn7u7WnpHW1XmWmms'; // 固定 API Key
             const text = document.getElementById('userText').value;
