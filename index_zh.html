@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +5,53 @@
     <meta charset="UTF-8">
     <title>Text to Visual Card</title>
     <style>
+                /* iOS 风格的开关按钮 */
+        .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        margin-left: 20px; /* 调整与其他元素的间距 */
+        }
+
+        .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        }
+
+        .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+        }
+
+        .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+        }
+
+        input:checked + .slider {
+        background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+        transform: translateX(26px);
+        }
+
         @font-face {
             font-family: 'Smiley';
             src: url('Smiley.ttf') format('truetype');
@@ -140,55 +186,8 @@
                 width: 100%;
             }
         }
-
-        /* iOS 风格的开关按钮 */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-            margin-left: 20px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #2196F3;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-                        /* 设置容器为 flex 布局，内容水平和垂直居中 */
-                        .center-container {
+                /* 设置容器为 flex 布局，内容水平和垂直居中 */
+                .center-container {
             display: flex;
             justify-content: center;  /* 水平居中 */
 
@@ -198,24 +197,23 @@
 </head>
 <body>
     <div id="app">
-                        <!-- admitad.banner: e1z3ho64gcf923d5a12016525dc3e8 AliExpress WW -->
-                        <div class="center-container">
-                            <a target="_blank" rel="nofollow" href="https://wextap.com/g/e1z3ho64gcf923d5a12016525dc3e8/?i=4">
-                                <img width="320" height="100" border="0" src="banner-320-100.493d.jpg" alt="AliExpress WW"/>
-                            </a>
-                        </div>
-        <h1>📖 小红书图文 AI 生成</h1>
-
-        <p style="text-align: center; color: #777; font-size: 14px;">Use this tool to create visually engaging content for platforms like Instagram, Facebook, and more.</p>
-
-        <!-- iOS 风格的语言切换开关 -->
+        <!-- admitad.banner: e1z3ho64gcf923d5a12016525dc3e8 AliExpress WW -->
+        <div class="center-container">
+            <a target="_blank" rel="nofollow" href="https://wextap.com/g/e1z3ho64gcf923d5a12016525dc3e8/?i=4">
+                <img width="320" height="100" border="0" src="banner-320-100.493d.jpg" alt="AliExpress WW"/>
+            </a>
+        </div>
+<!-- /admitad.banner -->
+        <h1>📖 小红书图文生成</h1>
         <div style="float: right;">
             <label class="switch">
-                <input type="checkbox" id="languageSwitch" onchange="toggleLanguage()">
-                <span class="slider"></span>
+              <input type="checkbox" id="languageSwitch" onchange="toggleLanguage()">
+              <span class="slider"></span>
             </label>
             <span>English/中文</span>
-        </div>
+          </div>
+          
+        <p style="text-align: center; color: #777; font-size: 14px;">Use this tool to create visually engaging content for platforms like Instagram, Facebook, and more.</p>
 
         <!-- Text input area -->
         <label>📝 Enter Text:</label>
@@ -262,14 +260,27 @@
 
     <script>
         function toggleLanguage() {
-            const languageSwitch = document.getElementById("languageSwitch");
-            if (languageSwitch.checked) {
-                // 切换到中文页面
-                window.location.href = "index.html";
-            }
-        }
+    const languageSwitch = document.getElementById("languageSwitch");
+    if (languageSwitch.checked) {
+        // 切换为中文，跳转到中文版本页面
+        window.location.href = "index.html"; // 替换为实际的中文页面 URL
+    } 
+}
 
-        // 其他功能的代码...
+        let uploadedImageDataUrl = ''; 
+        let generatedImages = []; 
+
+        document.getElementById('imageUpload').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    uploadedImageDataUrl = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         async function processText() {
             const apiKey = 'sk-JrEeXokuYxxLlGqnDro3nzUYQvax4M9Wn7u7WnpHW1XmWmms'; // 固定 API Key
             const text = document.getElementById('userText').value;
@@ -292,57 +303,57 @@
                 let prompt = '';
                 if (theme === 'tutorial') {
                     prompt = `
-                        Please distill the following text into a tutorial format and provide:
-                        1. A concise title for the tutorial.
-                        2. A one-sentence summary of the tutorial's purpose.
-                        3. A detailed breakdown of the steps (as many as possible) in an array format, each step including step_number and description.
-                        4. Three potential questions and their solutions, provided in an array.
-                        5. An image description for a related visual.
+                        请将以下文本提炼为教程格式并提供：
+                        1. 教程的简洁标题。
+                        2. 教程目的的一句话摘要。
+                        3. 以数组格式详细分解步骤（尽可能多），每个步骤包括步骤编号和说明。
+                        4. 三个潜在问题及其解决方案，以数组形式提供。
+                        5. 相关视觉效果的图像说明。
 
-                        Return in JSON format including:
-                        - title
-                        - one_word (one-sentence summary)
-                        - steps
-                        - faqs
-                        - image_description
+                        以 JSON 格式返回，包括：
+                        - 标题
+                        - 一个单词（一句话摘要）
+                        - 步骤
+                        - 常见问题
+                        - 图像说明
 
-                        Text content:
+                        文本内容：
                         ${text}
                     `;
                 } else if (theme === 'keypoints') {
                     prompt = `
-                        Please analyze the following text and provide:
-                        1. A suitable title for the content.
-                        2. A one-sentence summary.
-                        3. Five key points with brief explanations in array format.
-                        4. An image description for a related visual.
+                        请分析以下文本并提供：
+                        1. 适合内容的标题。
+                        2. 一句话总结。
+                        3. 五个要点，以数组格式提供简要说明。
+                        4. 相关视觉效果的图像描述。
 
-                        Return in JSON format including:
-                        - title
-                        - one_word
-                        - key_points
-                        - image_description
+                        以 JSON 格式返回，包括：
+                        - 标题
+                        - 单词
+                        - 关键点
+                        - 图像描述
 
-                        Text content:
+                        文本内容：
                         ${text}
                     `;
                 } else {
                     prompt = `
-                        Please analyze the following text and provide:
-                        1. A suitable title.
-                        2. A one-sentence summary.
-                        3. Three key points in array format.
-                        4. Three questions and answers, in array format.
-                        5. An image description for a related visual.
+                        请分析以下文本并提供：
+                        1. 合适的标题。
+                        2. 一句话总结。
+                        3. 三个关键点（数组格式）。
+                        4. 三个问题和答案（数组格式）。
+                        5. 相关视觉效果的图像描述。
 
-                        Return in JSON format including:
-                        - title
-                        - one_word
-                        - key_points
-                        - questions
-                        - image_description
+                        以 JSON 格式返回，包括：
+                        - 标题
+                        - 单词
+                        - 关键点
+                        - 问题
+                        - 图像描述
 
-                        Text content:
+                        文本内容：
                         ${text}
                     `;
                 }
@@ -410,8 +421,8 @@
             leftDiv.innerHTML = `
                 <div class="innerDivContent">
                     <div style="font-size: 50px; color: var(--accent-color); margin-top: 40px;">30s</div>
-                    <div style="font-size: 24px; color: black; background-color: var(--accent-color); margin-top: 10px; padding: 5px 10px; border-radius: 4px;">✔ Learn a new skill</div>
-                    <div style="margin-top: 20px; color: var(--main-text-color);">Original: ${article.words_count} words | Time saved: ${article.time_saved}</div>
+                    <div style="font-size: 24px; color: black; background-color: var(--accent-color); margin-top: 10px; padding: 5px 10px; border-radius: 4px;">✔ 学会一个新知识</div>
+                    <div style="margin-top: 20px; color: var(--main-text-color);">Original: ${article.words_count} 字 | 剩下时间：${article.time_saved}</div>
                     <div class="imageContainer">
                         <img src="${article.image_url}" alt="Generated Image">
                         <div class="imageTitle">${article.title}</div>
@@ -424,9 +435,9 @@
                     <div class="innerDivContent">
                         <div style="font-size: 20px; color: var(--accent-color);">📝 Tutorial Overview</div>
                         <hr>
-                        <div style="font-size: 16px; color: var(--accent-color); margin-top: 10px;">🎯 Purpose</div>
+                        <div style="font-size: 16px; color: var(--accent-color); margin-top: 10px;">🎯 目标</div>
                         <div style="font-size: 14px; color: var(--main-text-color); margin-top: 5px;">${article.one_word}</div>
-                        <div style="font-size: 16px; color: var(--accent-color); margin-top: 10px;">📌 Steps</div>
+                        <div style="font-size: 16px; color: var(--accent-color); margin-top: 10px;">📌 步骤</div>
                         <div style="font-size: 12px; color: var(--main-text-color); margin-top: 5px;">
                             ${article.steps.map(step => `<p>🔹 Step ${step.step_number}: ${step.description}</p>`).join('')}
                         </div>
